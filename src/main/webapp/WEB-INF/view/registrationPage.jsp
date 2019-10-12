@@ -19,7 +19,7 @@
             <form:input path="firstName"/>
         </p>
         <p>
-            <form:label path="lastName">FirstName:</form:label>
+            <form:label path="lastName">LastName:</form:label>
             <form:input path="lastName"/>
         </p>
         <p>
