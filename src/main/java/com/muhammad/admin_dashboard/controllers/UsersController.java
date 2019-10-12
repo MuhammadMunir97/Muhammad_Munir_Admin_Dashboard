@@ -8,8 +8,10 @@ import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,7 +26,6 @@ public class UsersController {
 	
 	private UserValidator userValidator;
     
-    // NEW
     public UsersController(UserService userService, UserValidator userValidator) {
         this.userService = userService;
         this.userValidator = userValidator;
@@ -41,7 +42,7 @@ public class UsersController {
     	if (result.hasErrors()) {
             return "/view/registrationPage.jsp";
         }
-    	userService.saveUserWithAdminRolecopy(user);
+    	userService.saveWithUserRole(user);
         return "redirect:/login";
     }
     
@@ -64,8 +65,22 @@ public class UsersController {
     
     @RequestMapping("/admin")
     public String adminPage(Principal principal, Model model) {
-        String username = principal.getName();
-        model.addAttribute("currentUser", userService.findByUsername(username));
+        String email = principal.getName();
+        model.addAttribute("currentUser", userService.findByUsername(email));
+        model.addAttribute("users" , userService.findAllUsers());
         return "/view/adminPage.jsp";
+    }
+    
+    @DeleteMapping("/admin/delete")
+    public String deleteUser(@RequestParam("user_Id") Long id) {
+    	userService.deleteUserById(id);
+    	return "redirect:/admin";
+    }
+    
+    @PutMapping("/admin/promote")
+    public String promoteUserToAdmin(@RequestParam("user_Id") Long id) {
+    	User user = userService.findByUserId(id);
+    	userService.saveUserWithAdminRolecopy(user);
+    	return "redirect:/admin";
     }
 }

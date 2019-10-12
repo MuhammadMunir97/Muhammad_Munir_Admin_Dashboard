@@ -9,7 +9,25 @@
 <title>Welcome Page</title>
 </head>
 <body>
-    <h1>Welcome Page <c:out value="${currentUser.username}"></c:out></h1>
+    <h1>Welcome Page <c:out value="${currentUser.firstName}"/> ${currentUser.lastName}</h1>
+    <table>
+    <thead>
+        <tr>
+            <th><h3>First Name</h3></th>
+            <th><h3>Last Name</h3></th>
+           	<th><h3>Email</h3></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        	<td>${currentUser.firstName}</td>
+        	<td>${currentUser.lastName}</td>
+        	<td>${currentUser.email}</td>
+        </tr>
+    </tbody>
+</table>
+    
+    
     
     <form id="logoutForm" method="POST" action="/logout">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

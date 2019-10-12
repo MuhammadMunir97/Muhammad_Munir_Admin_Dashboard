@@ -1,5 +1,8 @@
 package com.muhammad.admin_dashboard.services;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,9 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
     
+    public List<User> findAllUsers(){
+    	return (List<User>) userRepository.findAll();
+    }
     
     // 1
     public void saveWithUserRole(User user) {
@@ -34,10 +40,21 @@ public class UserService {
         userRepository.save(user);
     }    
     
-    // 3
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public void deleteUserById(Long id) {
+    	userRepository.deleteById(id);
     }
     
+    public User findByUsername(String email) {
+    	return userRepository.findByEmail(email);
+    }
+    
+    public User findByUserId(Long id) {
+    	Optional<User> user = userRepository.findById(id);
+    	if(user.isPresent()) {
+    		return user.get();
+    	}else {
+    		return null;
+    	}
+    }
 }
     

@@ -15,6 +15,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -24,6 +25,19 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
+    
+    @Column(columnDefinition = "VARCHAR(65)")
+	@Size(min = 2, message = "Please enter a valid first name of at least 2 characters")
+    private String firstName;
+	
+	@Column(columnDefinition = "VARCHAR(65)")
+	@Size(min = 2, message = "Please enter a valid last name of at least 2 characters")
+    private String lastName;
+	
+	@Column(columnDefinition = "VARCHAR(100)" , unique=true)
+	@Email(message = "Please enter a valid email format")
+    private String email;
+	
     @Size(min=3, message="Username must be greater than 3 characters")
     private String username;
     @Size(min=5, message="password must be greater than 5 characters")
@@ -86,7 +100,28 @@ public class User {
         this.roles = roles;
     }
     
-    @PrePersist
+    public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+	@PrePersist
     protected void onCreate(){
         this.createdAt = new Date();
     }
