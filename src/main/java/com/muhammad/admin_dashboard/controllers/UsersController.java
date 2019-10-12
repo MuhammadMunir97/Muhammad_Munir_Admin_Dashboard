@@ -15,15 +15,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.muhammad.admin_dashboard.entities.User;
 import com.muhammad.admin_dashboard.services.UserService;
+import com.muhammad.admin_dashboard.validations.UserValidator;
 
 @Controller
 public class UsersController {
 	
 	private final UserService userService;
 	
-	public UsersController(UserService userService) {
-		this.userService = userService;
-	}
+	private UserValidator userValidator;
+    
+    // NEW
+    public UsersController(UserService userService, UserValidator userValidator) {
+        this.userService = userService;
+        this.userValidator = userValidator;
+    }
 
 	@RequestMapping("/registration")
     public String registerForm(@Valid @ModelAttribute("user") User user) {
@@ -32,10 +37,11 @@ public class UsersController {
     
     @PostMapping("/registration")
     public String registration(@Valid @ModelAttribute("user") User user, BindingResult result, Model model, HttpSession session) {
-        if (result.hasErrors()) {
+    	userValidator.validate(user, result);
+    	if (result.hasErrors()) {
             return "/view/registrationPage.jsp";
         }
-        userService.saveWithUserRole(user);
+    	userService.saveUserWithAdminRolecopy(user);
         return "redirect:/login";
     }
     
@@ -54,5 +60,12 @@ public class UsersController {
         String username = principal.getName();
         model.addAttribute("currentUser", userService.findByUsername(username));
         return "/view/homePage.jsp";
+    }
+    
+    @RequestMapping("/admin")
+    public String adminPage(Principal principal, Model model) {
+        String username = principal.getName();
+        model.addAttribute("currentUser", userService.findByUsername(username));
+        return "/view/adminPage.jsp";
     }
 }
